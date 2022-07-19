@@ -1,0 +1,23 @@
+{
+	"GDL-ID":"25LQ",
+	"Order Name":"CosNatKE20",
+	"StarttimeRTC":"06.04.2020 07:28:57",
+	"LoggingStart":"01.05.2020",
+	"RecordingStop":"08.09.2021 03:13:24",
+	"StopTimeRTC":"08.09.2021 03:13:27",
+	"StopTimeReference":"24.11.2021 09:24:42",
+	"ClearlightLoggingInterval":"5",
+	"ClearlightThresholdMantisse":"23",
+	"ClearlightThresholdExponent":"7",
+	"ClearlightThreshold":"3000",
+	"FileName":"25LQ_20211124",
+	"DataFilePath":"R:\\20 Project\\80703 Geolocator Produktion\\$Download EB\\CosNatKE20\\25LQ_20211124\/",
+	"HW Version":"GDL2_V2.3",
+	"FW Version":"GDL2_V3.6.1",
+	"BirdTagMngr":"BirdTag Manager V2.1.0",
+	"BirdTagInterface":"BirdTag Connector v3.0",
+	"UTCOffset":"0",
+	"ConfigMemorySize":"256",
+	"DataMemorySize":"51200",
+	"LogMemorySize":"768"
+}
