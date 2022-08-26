@@ -1,7 +1,7 @@
 library(ecmwfr)
 
 # Define which track to work with
-gdl <- "18LX"
+# gdl <- "18LX"
 
 load(paste0("data/5_wind_graph/", gdl, "_request.Rdata"))
 

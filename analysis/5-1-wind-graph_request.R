@@ -1,7 +1,7 @@
 library(ecmwfr)
 
 # Define which track to work with
-gdl <- "18LX"
+# gdl <- "18LX"
 
 # Load
 load(paste0("data/3_static/", gdl, "_static_prob.Rdata"))
@@ -15,7 +15,7 @@ wf_set_key(user = cds.user, key = cds.key, service = "cds")
 
 
 possible_pressure <- c(1, 2, 3, 5, 7, 10, 20, 30, 50, 70, seq(100, 250, 25), seq(300, 750, 50), seq(775, 1000, 25))
-area <- extent(static_prob[[1]])
+area <- raster::extent(static_prob[[1]])
 area <- c(area@ymax, area@xmin, area@ymin, area@xmax)
 
 req <- list()

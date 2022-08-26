@@ -1,5 +1,5 @@
 ---
-title: "Template for GeoPressureR"
+title: "Mangrove Kingfisher & Red-capped Robin-chat"
 description: |
   List of Reports
 site: distill::distill_website

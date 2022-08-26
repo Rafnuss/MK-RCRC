@@ -10,10 +10,10 @@ library(raster)
 library(readxl)
 
 # Set debug T to see all check and set to F once everything is correct
-debug <- T
+debug <- F
 
 # Define the geolocator data logger id to use
-gdl <- "18LX"
+# gdl <- "18LX"
 
 # Read its information from gpr_settings.xlsx
 gpr <- read_excel("data/gpr_settings.xlsx") %>%
@@ -150,7 +150,8 @@ if (debug) {
 }
 
 # Save ----
-save( # pressure_timeserie,
+save(
+  # pressure_timeserie, # can be removed in not in debug mode
   pressure_prob,
   pam,
   gpr,

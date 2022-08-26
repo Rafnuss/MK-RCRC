@@ -1,18 +1,28 @@
-name: "GeoPressureTemplate"
+name: "MK-RCRC"
 description: |
-  Template for GeoPressureR
+  Mangrove Kingfisher & Red-capped Robin-chat
 output_dir: "../docs"
-title: "Template for GeoPressureR"
+title: "Mangrove Kingfisher & Red-capped Robin-chat"
 navbar:
   left:
     - text: "Basic Trajectory"
       menu:
-        - text: "18LX"
-          href: "/GeoPressureTemplate/basic_trajectory/18LX.html"
+        - text: "24TA"
+          href: "/MK-RCRC/basic_trajectory/24TA.html"
+        - text: "24UL"
+          href: "/MK-RCRC/basic_trajectory/24UL.html"
     - text: "Technical Details"
       menu:
-        - text: "18LX"
-          href: "/GeoPressureTemplate/technical_details/18LX.html"
+        - text: "24TA"
+          href: "/MK-RCRC/technical_details/24TA.html"
+        - text: "24UL"
+          href: "/MK-RCRC/technical_details/24UL.html"
+    - text: "wind_trajectory"
+      menu:
+        - text: "24TA"
+          href: "/GeoPressureTemplate/wind_trajectory/24TA.html"
+        - text: "24UL"
+          href: "/GeoPressureTemplate/wind_trajectory/24UL.html"
   right:
     - icon: fa-envelope fa-lg
       href: mailto:<rafnuss@gmail.com>

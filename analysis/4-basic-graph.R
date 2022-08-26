@@ -4,10 +4,10 @@ library(leaflet.extras)
 library(raster)
 library(igraph)
 
-debug <- T
+#debug <- T
 
-# Define which track to work with
-gdl <- "18LX"
+# Define the geolocator data logger id to use
+# gdl <- "18LX"
 
 # Load static prob
 load(paste0("data/1_pressure/", gdl, "_pressure_prob.Rdata"))
@@ -21,7 +21,7 @@ grl <- graph_create(static_prob,
 # If you get an error with trimming, use geopressureviz from end of 3.static.R
 
 # Add probability of each edge
-grl$p <- grl$ps * flight_prob(grl$gs, method = "gamma", shape = 7, scale = 7, low_speed_fix = grl$low_speed_fix)
+grl$p <- grl$ps * flight_prob(grl$gs, method = "logis", location = 40, scale = 7)
 
 
 
