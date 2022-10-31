@@ -9,7 +9,7 @@ gdl_list <- read_excel("data/gpr_settings.xlsx") %>%
   .$gdl_id
 
 # Define the report to produce
-report_list <- c("basic_trajectory", "technical_details", "wind_trajectory")
+report_list <- c("technical_details", "wind_trajectory")
 
 # Generate the following report for each tracks
 # This will produce an HTML file for each reports
@@ -18,9 +18,7 @@ for (report in report_list) {
   for (gdl in gdl_list) {
     render(paste0("reports/_", report, ".Rmd"),
       output_file = paste0(report, "/", gdl, ".html"),
-      params = list(
-        gdl_id = gdl
-      )
+      params = list( gdl_id = gdl)
     )
   }
 }

@@ -5,24 +5,26 @@ output_dir: "../docs"
 title: "Mangrove Kingfisher & Red-capped Robin-chat"
 navbar:
   left:
-    - text: "Basic Trajectory"
+    - text: "Wind Trajectory"
       menu:
-        - text: "24TA"
+        - text: "RCRC-24TA"
           href: "/MK-RCRC/basic_trajectory/24TA.html"
-        - text: "24UL"
+        - text: "RCRC-24UL"
+          href: "/MK-RCRC/basic_trajectory/26YD.html"
+        - text: "MK-24UL"
           href: "/MK-RCRC/basic_trajectory/24UL.html"
+        - text: "MK-24UL"
+          href: "/MK-RCRC/basic_trajectory/28AD.html"
     - text: "Technical Details"
       menu:
-        - text: "24TA"
+        - text: "RCRC-24TA"
           href: "/MK-RCRC/technical_details/24TA.html"
-        - text: "24UL"
-          href: "/MK-RCRC/technical_details/24UL.html"
-    - text: "wind_trajectory"
-      menu:
-        - text: "24TA"
-          href: "/GeoPressureTemplate/wind_trajectory/24TA.html"
-        - text: "24UL"
-          href: "/GeoPressureTemplate/wind_trajectory/24UL.html"
+        - text: "RCRC-26YD"
+          href: "/MK-RCRC/technical_details/26YD.html"
+        - text: "MK-24UL"
+          href: "/MK-RCRC/basic_trajectory/24UL.html"
+        - text: "MK-28AD"
+          href: "/MK-RCRC/basic_trajectory/28AD.html"
   right:
     - icon: fa-envelope fa-lg
       href: mailto:<rafnuss@gmail.com>

@@ -788,6 +788,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   d-article table.gt_table td,
   d-article table.gt_table th {
     border-bottom: none;
+    font-size: 100%;
   }
 
   .html-widget {
@@ -1860,15 +1861,21 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
       // hoverable references
       $('span.citation[data-cites]').each(function() {
-        if ($(this).children()[0].nodeName == "D-FOOTNOTE") {
-          var fn = $(this).children()[0]
+        const citeChild = $(this).children()[0]
+        // Do not process if @xyz has been used without escaping and without bibliography activated
+        // https://github.com/rstudio/distill/issues/466
+        if (citeChild === undefined) return true
+
+        if (citeChild.nodeName == "D-FOOTNOTE") {
+          var fn = citeChild
           $(this).html(fn.shadowRoot.querySelector("sup"))
           $(this).id = fn.id
           fn.remove()
         }
         var refs = $(this).attr('data-cites').split(" ");
         var refHtml = refs.map(function(ref) {
-          return "<p>" + $('#ref-' + ref).html() + "</p>";
+          // Could use CSS.escape too here, we insure backward compatibility in navigator
+          return "<p>" + $('div[id="ref-' + ref + '"]').html() + "</p>";
         }).join("\n");
         window.tippy(this, {
           allowHTML: true,
@@ -2098,13 +2105,15 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <a href="index.html" class="title">Mangrove Kingfisher &amp; Red-capped Robin-chat</a>
 <div class="nav-dropdown">
 <button class="nav-dropbtn">
-Basic Trajectory
+Wind Trajectory
  
 <span class="down-arrow">&#x25BE;</span>
 </button>
 <div class="nav-dropdown-content">
-<a href="/MK-RCRC/basic_trajectory/24TA.html">24TA</a>
-<a href="/MK-RCRC/basic_trajectory/24UL.html">24UL</a>
+<a href="/MK-RCRC/basic_trajectory/24TA.html">RCRC-24TA</a>
+<a href="/MK-RCRC/basic_trajectory/26YD.html">RCRC-24UL</a>
+<a href="/MK-RCRC/basic_trajectory/24UL.html">MK-24UL</a>
+<a href="/MK-RCRC/basic_trajectory/28AD.html">MK-24UL</a>
 </div>
 </div>
 <div class="nav-dropdown">
@@ -2114,19 +2123,10 @@ Technical Details
 <span class="down-arrow">&#x25BE;</span>
 </button>
 <div class="nav-dropdown-content">
-<a href="/MK-RCRC/technical_details/24TA.html">24TA</a>
-<a href="/MK-RCRC/technical_details/24UL.html">24UL</a>
-</div>
-</div>
-<div class="nav-dropdown">
-<button class="nav-dropbtn">
-wind_trajectory
- 
-<span class="down-arrow">&#x25BE;</span>
-</button>
-<div class="nav-dropdown-content">
-<a href="/GeoPressureTemplate/wind_trajectory/24TA.html">24TA</a>
-<a href="/GeoPressureTemplate/wind_trajectory/24UL.html">24UL</a>
+<a href="/MK-RCRC/technical_details/24TA.html">RCRC-24TA</a>
+<a href="/MK-RCRC/technical_details/26YD.html">RCRC-26YD</a>
+<a href="/MK-RCRC/basic_trajectory/24UL.html">MK-24UL</a>
+<a href="/MK-RCRC/basic_trajectory/28AD.html">MK-28AD</a>
 </div>
 </div>
 </div>
@@ -2154,9 +2154,7 @@ wind_trajectory
 
 
 <div class="d-article">
-<p>This is an example of the reports generated based on the <a
-href="https://github.com/Rafnuss/GeoPressureTemplate">GeoPressureTemplate</a>.
-You can navigate from this page to all the report generated.</p>
+<p>This is an example of the reports generated based on the <a href="https://github.com/Rafnuss/GeoPressureTemplate">GeoPressureTemplate</a>. You can navigate from this page to all the report generated.</p>
 <div class="layout-chunk" data-layout="l-body">
 <details>
 <summary>
@@ -2181,24 +2179,22 @@ Show code
 <span><span class='op'>}</span></span></code></pre>
 </div>
 </details>
-<h2 id="basic-trajectory">Basic Trajectory</h2>
-<ul>
-<li><a href=' basic_trajectory/24TA.html '> 24TA </a></li>
-<li><a href=' basic_trajectory/24UL.html '> 24UL </a></li>
-</ul>
 <h2 id="technical-details">Technical Details</h2>
 <ul>
 <li><a href=' technical_details/24TA.html '> 24TA </a></li>
 <li><a href=' technical_details/24UL.html '> 24UL </a></li>
+<li><a href=' technical_details/26YD.html '> 26YD </a></li>
+<li><a href=' technical_details/28AD.html '> 28AD </a></li>
 </ul>
 <h2 id="wind-trajectory">Wind Trajectory</h2>
 <ul>
 <li><a href=' wind_trajectory/24TA.html '> 24TA </a></li>
 <li><a href=' wind_trajectory/24UL.html '> 24UL </a></li>
+<li><a href=' wind_trajectory/26YD.html '> 26YD </a></li>
+<li><a href=' wind_trajectory/28AD.html '> 28AD </a></li>
 </ul>
 </div>
-<div class="sourceCode" id="cb1"><pre
-class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>

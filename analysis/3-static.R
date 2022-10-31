@@ -8,8 +8,10 @@ library(RColorBrewer)
 library(raster)
 library(dplyr)
 library(readxl)
+library(GeoLocTools)
+setupGeolocation()
 
-#debug <- T
+debug <- F
 
 # Define the geolocator data logger id to use
 # gdl <- "18LX"
@@ -18,7 +20,9 @@ library(readxl)
 load(paste0("data/1_pressure/", gdl, "_pressure_prob.Rdata"))
 load(paste0("data/2_light/", gdl, "_light_prob.Rdata"))
 
-# Defint the threashold of the stationay period to consider
+
+
+# Define the threshold of the stationary period to consider
 thr_sta_dur <- gpr$thr_dur # in hours
 
 sta_pres <- unlist(lapply(pressure_prob, function(x) raster::metadata(x)$sta_id))
@@ -52,11 +56,6 @@ static_prob <- mapply(function(light, pressure, flight) {
   # define static prob as the product of light and pressure prob
   static_prob <- light * pressure
 
-  # replace na by zero
-  # tmp <- values(static_prob)
-  # tmp[is.na(tmp)] <- 0
-  # values(static_prob) <- tmp
-
   # define metadata
   metadata(static_prob) <- metadata(pressure)
   metadata(static_prob)$flight <- flight
@@ -64,8 +63,6 @@ static_prob <- mapply(function(light, pressure, flight) {
   # return
   static_prob
 }, light_prob, pressure_prob, flight)
-
-
 
 
 # Overwrite prob at calibration
@@ -84,7 +81,7 @@ tmp[!is.na(tmp)] <- 0
 tmp[lat_calib_id, lon_calib_id] <- 1
 values(static_prob[[1]]) <- tmp
 
-if (!is.na(gpr$calib_2_start)) {
+if (!is.na(gpr$calib_2_start) & abs(difftime(gpr$calib_2_end, gpr$crop_end, units = "days"))<3) {
   if (!is.na(gpr$calib_2_lat)) {
     lon_calib_id <- which.min(abs(gpr$calib_2_lon - lon))
     lat_calib_id <- which.min(abs(gpr$calib_2_lat - lat))
@@ -96,7 +93,6 @@ if (!is.na(gpr$calib_2_start)) {
 }
 
 
-
 # Get pressure timeserie at the best match of static
 path <- geopressure_map2path(static_prob)
 static_timeserie <- geopressure_ts_path(path, pam$pressure)
@@ -104,19 +100,50 @@ static_timeserie <- geopressure_ts_path(path, pam$pressure)
 
 if (debug) {
   # GeopressureViz
-  geopressureviz <- list(
-    pam_data = pam,
+  load(paste0("data/1_pressure/", gdl, "_pressure_prob.Rdata"))
+  load(paste0("data/2_light/", gdl, "_light_prob.Rdata"))
+  load(paste0("data/3_static/", gdl, "_static_prob.Rdata"))
+
+  path_modified <- geopressureviz(
+    pam = pam,
     static_prob = static_prob,
     pressure_prob = pressure_prob,
     light_prob = light_prob,
     pressure_timeserie = static_timeserie
   )
-  save(geopressureviz, file = "~/geopressureviz.RData")
 
-  appDir <- system.file("geopressureviz", package = "GeoPressureR")
-  shiny::runApp(appDir, launch.browser = getOption("browser"))
+  # Pressure
+  path_modified_timeserie <- geopressure_ts_path(path_modified, pam$pressure)
+
+  path_modified_ts_bind <- do.call("rbind", path_modified_timeserie) %>%
+    filter(!is.na(sta_id))
+
+  # To make the labeling easier, you can replace pam$pressure$obs by the difference between
+  # pam$pressure$obs and pressure_timeserie$pressure0 to see the anomalies.
+  # Because trainset_read does not read the actual value of obs, but simply the label, it won't
+  # impact your code
+  pam_diff <- pam
+  pam_diff$pressure <- pam_diff$pressure %>%
+    left_join(path_modified_ts_bind %>% dplyr::select(c("date","pressure0")), by="date") %>%
+    rename(obs_ref = pressure0)
+
+  trainset_write(pam_diff, "data/1_pressure/labels/", filename = paste0(pam$id, "_act_pres"))
+
+  # We can automatically extract some outlier based on s value
+  # pam_diff_pressure <- pam_diff_pressure %>%
+  #  mutate( isoutlier = ifelse(!isoutlier&abs(diff)>4*gpr$prob_map_s&sta_id>0, TRUE, isoutlier))
+  # message(sum(pam_diff_pressure$isoutlier)-sum(pam$pressure$isoutlier), " new outlier automatically added")
+  twl_path <- left_join(twl, path_modified) %>%
+    mutate(
+      twilight = twilight(twilight,
+                          lon = lon, lat = lat, rise = rise, zenith = 96)
+    ) %>%
+    filter(!is.na(twilight))
+
+}
 
 
+if (debug) {
   # Check 1
   static_prob_n <- lapply(static_prob, function(x) {
     probt <- raster::as.matrix(x)
@@ -130,7 +157,6 @@ if (debug) {
       "zero for the stationay period: ", which(tmp)
     ))
   }
-
 
   ## Check 2
   for (i_s in seq_len(length(static_prob) - 1)) {
@@ -156,7 +182,7 @@ if (debug) {
 }
 
 ## Save ----
-save(pam,
+save(
   static_prob,
   static_timeserie,
   file = paste0("data/3_static/", gpr$gdl_id, "_static_prob.Rdata")
