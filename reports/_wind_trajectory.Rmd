@@ -2,9 +2,10 @@
 site: distill::distill_website
 params:
   gdl_id: "24UL"
+  name: "RCRC"
 ---
 ---
-title: `r params$gdl_id`
+title: `r paste0(params$gdl_id,' - ', params$name)`
 description: | 
   Wind trajectory
 ---
@@ -35,7 +36,7 @@ Altitudes are computed based on pressure measurement of the geolocation, correct
 
 ```{r, layout="l-page"}
 p <- ggplot() +
-  geom_vline(data = twl, aes(xintercept = twilight, linetype = ifelse(rise, "dashed", "solid"), color="grey"), lwd=0.1) +
+  geom_vline(data = twl, aes(xintercept = twilight, linetype = ifelse(rise, "dashed", "solid")), lwd=0.1, color="grey") +
   geom_line(data = do.call("rbind", shortest_path_timeserie), aes(x = date, y = altitude)) +
   geom_line(data = do.call("rbind", shortest_path_timeserie) %>% filter(sta_id > 0), aes(x = date, y = altitude, col = factor(sta_id))) +
   theme_bw() +

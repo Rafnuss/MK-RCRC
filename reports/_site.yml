@@ -8,13 +8,13 @@ navbar:
     - text: "Wind Trajectory"
       menu:
         - text: "RCRC-24TA"
-          href: "/MK-RCRC/basic_trajectory/24TA.html"
+          href: "/MK-RCRC/wind_trajectory/24TA.html"
         - text: "RCRC-24UL"
-          href: "/MK-RCRC/basic_trajectory/26YD.html"
+          href: "/MK-RCRC/wind_trajectory/26YD.html"
         - text: "MK-24UL"
-          href: "/MK-RCRC/basic_trajectory/24UL.html"
+          href: "/MK-RCRC/wind_trajectory/24UL.html"
         - text: "MK-24UL"
-          href: "/MK-RCRC/basic_trajectory/28AD.html"
+          href: "/MK-RCRC/wind_trajectory/28AD.html"
     - text: "Technical Details"
       menu:
         - text: "RCRC-24TA"

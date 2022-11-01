@@ -56,7 +56,7 @@ for (i in seq(1, length(gdl_list))) {
     disaggregate(2, method = "bilinear") %>%
     as.data.frame(xy = TRUE) %>%
     mutate(layer = layer) %>%
-    mutate(layer = ifelse(is.na(layer),0,layer)) %>%
+    mutate(layer = ifelse(is.na(layer), 0, layer)) %>%
     arrange(desc(layer)) %>%
     mutate(layerP = 1 - cumsum(layer) / sum(layer))
 
@@ -80,13 +80,14 @@ plot_inset <- ggplot() +
     ylim = c(-35, 37),
     expand = F
   ) +
-  geom_rect(aes(
-    xmin = layer_scales(p0)$x$range$range[1],
-    xmax = layer_scales(p0)$x$range$range[2],
-    ymin = layer_scales(p0)$y$range$range[1],
-    ymax = layer_scales(p0)$y$range$range[2]
-  ),
-  color = "red", alpha = 0.1, size = 1
+  geom_rect(
+    aes(
+      xmin = layer_scales(p0)$x$range$range[1],
+      xmax = layer_scales(p0)$x$range$range[2],
+      ymin = layer_scales(p0)$y$range$range[1],
+      ymax = layer_scales(p0)$y$range$range[2]
+    ),
+    color = "red", alpha = 0.1, size = 1
   ) +
   theme_map() +
   theme(
@@ -97,9 +98,9 @@ plot_inset <- ggplot() +
 pf <- ggdraw() +
   draw_plot(p) +
   draw_plot(plot_inset,
-            x = .65,
-            y = .72,
-            width = 0.25, height = .25
+    x = .72,
+    y = .72,
+    width = 0.25, height = .25
   )
 pf
 
@@ -115,6 +116,7 @@ ggsave(plot = pf, "reports/figure_print/wintering_location.eps", device = "eps")
 
 
 # Cumulative flight duration ----
+
 d <- list()
 for (i in seq(1, length(gdl_list))) {
   gdl <- gdl_list[i]
@@ -137,10 +139,9 @@ for (i in seq(1, length(gdl_list))) {
 
   tmp2 <- do.call("rbind", tmp)
 
-  if (gdl == "24UL") {
-    tmp2$start[1] <- tmp2$start[2] - 22 * 60 * 60 * 24
-  }
-  tmp2$flight[month(tmp2$end) < 8] <- -tmp2$flight[month(tmp2$end) < 8]
+  id <- month(tmp2$end) < 8 & month(tmp2$end) > 1
+  tmp2$flight[id] <- -tmp2$flight[id]
+
   d[[i]] <- data.frame(
     x = c(tmp2$start, tail(tmp2$end, 1)),
     y = c(0, cumsum(tmp2$flight)),
@@ -154,10 +155,10 @@ l <- d2 %>%
   summarise(color, gdl) %>%
   unique()
 
+# Set on cst time
+d2$x[d2$gdl %in% c("28AD","26YD","28BP")] <- d2$x[d2$gdl %in% c("28AD","26YD","28BP")]-years(1)
+
 d2 %>%
-  mutate(
-    x = `year<-`(x, 2000),
-  ) %>%
   ggplot(aes(x = x, y = y, color = color, group = gdl)) +
   geom_step(size = 1) +
   scale_color_identity(
@@ -169,7 +170,7 @@ d2 %>%
   scale_x_datetime(date_breaks = "1 month", minor_breaks = NULL, date_labels = "%b") +
   scale_y_continuous(breaks = seq(0, 210, by = 20)) +
   coord_cartesian(
-    xlim = as.POSIXct(c("2000-03-15 UTC", "2000-12-1 UTC"))
+    xlim = as.POSIXct(c("2020-10-01 UTC", "2021-7-1 UTC"))
   ) +
   ylab("Cumulative Hours of flight") +
   xlab("Date") +
@@ -193,15 +194,15 @@ ggsave("reports/figure_print/cumulative_flight.eps", device = "eps", width = 8, 
 
 
 
-# Gif of uncertainty ----
-e=extent(static_prob_marginal[[1]])
+# Map of trajectory ----
+e <- extent(static_prob_marginal[[1]])
 
 p0 <- map_data("world") %>%
-  filter(region %in% c("Kenya","Tanzania","Mozambique","Malawi","Uganda","Somalia")) %>%
-  ggplot(aes(long,lat)) +
-  geom_polygon(aes(group = group), fill = "black", colour = "grey50")  +
+  filter(region %in% c("Kenya", "Tanzania", "Mozambique", "Malawi", "Uganda", "Somalia")) %>%
+  ggplot(aes(long, lat)) +
+  geom_polygon(aes(group = group), fill = "black", colour = "grey50") +
   theme_void() +
-  coord_cartesian(xlim=e[c(1,2)], ylim = e[c(3,4)]) +
+  coord_cartesian(xlim = c(e[1]+3, e[2]), ylim = c(e[3]+4, e[4]-2)) +
   theme(panel.background = element_rect(fill = "grey10"))
 
 for (i in seq(1, length(gdl_list))) {
@@ -209,31 +210,35 @@ for (i in seq(1, length(gdl_list))) {
   load(paste0("data/1_pressure/", gdl, "_pressure_prob.Rdata"))
   load(paste0("data/5_wind_graph/", gdl, "_wind_graph.Rdata"))
 
-p <- p0
-for(i_s in seq_len(length(static_prob_marginal))){
-  d = as.data.frame(static_prob_marginal[[i_s]], xy=T) %>%
-    mutate(layer=ifelse(is.na(layer),0,layer))
+  p <- p0
+  for (i_s in seq_len(length(static_prob_marginal))) {
+    d <- as.data.frame(static_prob_marginal[[i_s]], xy = T) %>%
+      mutate(layer = ifelse(is.na(layer), 0, layer))
 
 
-   p = p +
-    geom_tile(data=d, aes(x, y, alpha=layer^3), fill=colour("batlow")(length(static_prob_marginal))[i_s]) + #brewer.pal(8,"Dark2")[i_s %% 7])  +
-    scale_alpha(range = c(0, 1)) +  new_scale("alpha")
-}
+    p <- p +
+      geom_tile(data = d, aes(x, y, alpha = layer^3), fill = colour("batlow")(length(static_prob_marginal))[i_s]) + # brewer.pal(8,"Dark2")[i_s %% 7])  +
+      scale_alpha(range = c(0, 1)) + new_scale("alpha")
+  }
 
-sp = shortest_path %>%
-  as.data.frame %>%
-  left_join(pam$sta, by = "sta_id") %>%
-  mutate(
-    col = colour("batlow")(length(static_prob_marginal))[sta_id],
-    duration = as.numeric(difftime(end, start, units = "days"))
+  sp <- shortest_path %>%
+    as.data.frame() %>%
+    left_join(pam$sta, by = "sta_id") %>%
+    mutate(
+      col = colour("batlow")(length(static_prob_marginal))[sta_id],
+      duration = as.numeric(difftime(end, start, units = "days"))
     )
 
-p + theme(legend.position="none") +
-  geom_path(data = sp, aes(lon, lat), colour="white") +
-  geom_point(data = sp, aes(lon, lat, fill = sta_id, size=duration^(0.3) * 10), pch=21, colour = "white") +
-  scale_fill_batlow()
+  pf <- p + theme(legend.position = "none") +
+    geom_path(data = sp, aes(lon, lat), colour = "white") +
+    geom_point(data = sp, aes(lon, lat, fill = sta_id, size = duration^(0.3) * 10), pch = 21, colour = "white") +
+    scale_fill_batlow()
+    # coord_map(xlim=e[c(1,2)], ylim = e[c(3,4)])
 
-# p +  coord_map(xlim=e[c(1,2)], ylim = e[c(3,4)])
+
+  ggsave(plot = pf, paste0("reports/figure_print/trajectory_", gdl, ".png"), width = 4, height = 8)
+  # ggsave(plot = pf, paste0("reports/figure_print/trajectory_", gdl, "eps"), device = "eps", width = 8, height = 4)
+
 }
 
 
@@ -260,7 +265,7 @@ p + theme(legend.position="none") +
 
 
 
-
+# Animated map of uncertainty ----
 
 p0 <- get_googlemap(
   center = c(
@@ -345,18 +350,22 @@ for (i in seq(1, length(gdl_list))) {
 }
 
 d <- do.call("rbind", d)
-year(d$time[month(d$time)<8]) <- 2000
-year(d$time[month(d$time)>=8]) <- 1999
+year(d$time[month(d$time) < 8]) <- 2000
+year(d$time[month(d$time) >= 8]) <- 1999
 
 d2 <- df2move(d, CRS("+proj=longlat +ellps=WGS84 +datum=WGS84"),
-              x = "lon", y = "lat", time = "time", track_id = "track_id") %>%
-  align_move(res = 24, unit = "hours", digit = 12) %>%  # Use midday position rather than midnight (while the bird could be flying)
+  x = "lon", y = "lat", time = "time", track_id = "track_id"
+) %>%
+  align_move(res = 24, unit = "hours", digit = 12) %>% # Use midday position rather than midnight (while the bird could be flying)
   subset_move(from = "1999-10-1", to = "2000-7-1") # remove the long equipement and retrival period duration
 
-frames <- d2 %>% frames_spatial(equidistant = T,
-                 path_colours = unique(d$color), trace_colour = unique(d$color),
-                 map_service = "mapbox", map_type = "satellite", map_token = "pk.eyJ1IjoicmFmbnVzcyIsImEiOiIzMVE1dnc0In0.3FNMKIlQ_afYktqki-6m0g",
-                 ext = extent(static_prob[[1]])) %>% #
+frames <- d2 %>%
+  frames_spatial(
+    equidistant = T,
+    path_colours = unique(d$color), trace_colour = unique(d$color),
+    map_service = "mapbox", map_type = "satellite", map_token = "pk.eyJ1IjoicmFmbnVzcyIsImEiOiIzMVE1dnc0In0.3FNMKIlQ_afYktqki-6m0g",
+    ext = extent(static_prob[[1]])
+  ) %>% #
   add_labels(x = NULL, y = NULL) %>% # add some customizations, such as axis labels
   add_timestamps(type = "label", size = 6) %>%
   add_progress()
@@ -367,7 +376,7 @@ animate_frames(frames, out_file = paste0("reports/figure_print/movevis3.gif"), h
 
 
 
-## Simulation ----
+# Simulation ----
 d <- list()
 for (i in seq(1, length(gdl_list))) {
   gdl <- gdl_list[i]
@@ -375,29 +384,28 @@ for (i in seq(1, length(gdl_list))) {
   load(paste0("data/1_pressure/", gdl, "_pressure_prob.Rdata"))
   load(paste0("data/5_wind_graph/", gdl, "_wind_graph.Rdata"))
 
-  path_sim2=path_sim
-  path_sim2$lat = path_sim$lat[c(1,2),]
-  path_sim2$lon = path_sim$lon[c(1,2),]
+  path_sim2 <- path_sim
+  path_sim2$lat <- path_sim$lat[c(1, 2), ]
+  path_sim2$lon <- path_sim$lon[c(1, 2), ]
 
   d <- path2df(pam, path_sim) %>%
     mutate(color = gpr$Color)
 
   d2 <- df2move(d, CRS("+proj=longlat +ellps=WGS84 +datum=WGS84"),
-                                          x = "lon", y = "lat", time = "time", track_id = "track_id") %>%
-    align_move(res = 24, unit = "hours", digit = 12) %>%  # Use midday position rather than midnight (while the bird could be flying)
-    subset_move(from = pam$sta$end[1]-3*60*60*24, to = tail(pam$sta$start, 1)+0*60*60*24)# remove the long equipement and retrival period duration
+    x = "lon", y = "lat", time = "time", track_id = "track_id"
+  ) %>%
+    align_move(res = 24, unit = "hours", digit = 12) %>% # Use midday position rather than midnight (while the bird could be flying)
+    subset_move(from = pam$sta$end[1] - 3 * 60 * 60 * 24, to = tail(pam$sta$start, 1) + 0 * 60 * 60 * 24) # remove the long equipement and retrival period duration
 
-  frames <- d2 %>% frames_spatial(
-    path_colours = rep(gpr$Color,nrow(path_sim$lat)), path_alpha = 0.4,
-    tail_size=.5, path_size = 1, tail_colour = rep(gpr$Color,nrow(path_sim$lat)),path_legend=FALSE ,
-    ext = extent(static_prob[[1]]
-                 )) %>% #
+  frames <- d2 %>%
+    frames_spatial(
+      path_colours = rep(gpr$Color, nrow(path_sim$lat)), path_alpha = 0.4,
+      tail_size = .5, path_size = 1, tail_colour = rep(gpr$Color, nrow(path_sim$lat)), path_legend = FALSE,
+      ext = extent(static_prob[[1]])
+    ) %>% #
     add_labels(x = NULL, y = NULL) %>% # add some customizations, such as axis labels
     add_timestamps(type = "label", size = 4) %>%
     add_progress()
 
   animate_frames(frames, out_file = paste0("reports/figure_print/movevis4.gif"), height = 1000, width = 1000, overwrite = T)
-
 }
-
-

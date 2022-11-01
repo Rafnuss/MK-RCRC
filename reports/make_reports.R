@@ -16,9 +16,12 @@ report_list <- c("technical_details", "wind_trajectory")
 for (report in report_list) {
   dir.create(paste0("reports/", report), showWarnings = F)
   for (gdl in gdl_list) {
+    gpr <- read_excel("data/gpr_settings.xlsx") %>%
+      filter(keep)
     render(paste0("reports/_", report, ".Rmd"),
       output_file = paste0(report, "/", gdl, ".html"),
-      params = list( gdl_id = gdl)
+      params = list( gdl_id = gdl,
+                     name = gpr$common_name[gpr$gdl_id==gdl])
     )
   }
 }

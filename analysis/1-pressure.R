@@ -109,7 +109,7 @@ pressure_maps <- geopressure_map(pam$pressure,
                                  extent = c(gpr$extent_N, gpr$extent_W, gpr$extent_S, gpr$extent_E),
                                  scale = gpr$map_scale,
                                  max_sample = gpr$map_max_sample,
-                                 margin = gpr$map_margin+10
+                                 margin = gpr$map_margin
 )
 
 # Convert to probability map

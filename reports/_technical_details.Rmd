@@ -2,9 +2,10 @@
 site: distill::distill_website
 params:
   gdl_id: "28AD"
+  name: "RCRC"
 ---
 ---
-title: `r params$gdl_id`
+title: `r paste0(params$gdl_id,' - ', params$name)`
 description: | 
   Technical details
 ---
@@ -46,7 +47,7 @@ pressure_na <- pam$pressure %>%
   mutate(obs = ifelse(isoutlier | sta_id == 0, NA, obs))
 p <- ggplot() +
   geom_line(data = pam$pressure, aes(x = date, y = obs), colour = "grey") +
- #geom_point(data = subset(pam$pressure, isoutlier), aes(x = date, y = obs), colour = "black") +
+  # geom_point(data = subset(pam$pressure, isoutlier), aes(x = date, y = obs), colour = "black") +
   # geom_line(data = pressure_na, aes(x = date, y = obs, color = factor(sta_id)), size = 0.5) +
   geom_line(data = do.call("rbind", shortest_path_timeserie) %>% filter(sta_id > 0), aes(x = date, y = pressure0, col = factor(sta_id))) +
   theme_bw() +
@@ -59,20 +60,20 @@ ggplotly(p, dynamicTicks = T) %>% layout(showlegend = F)
 ## Pressure calibration
 
 ```{r, layout="l-page"}
-  pressure_ts_bind <- do.call("rbind", shortest_path_timeserie) %>%
-    filter(!is.na(sta_id))
+pressure_ts_bind <- do.call("rbind", shortest_path_timeserie) %>%
+  filter(!is.na(sta_id))
 
-  pam$pressure %>%
-    left_join(pressure_ts_bind %>% dplyr::select(c("date","pressure0")), by="date") %>%
-    mutate(diff=ifelse(is.na(pressure0), 0, obs-pressure0)) %>%
-    filter(sta_id > 0 & !isoutlier) %>%
-    group_by(sta_id) %>%
-    mutate(sta_id = paste0(sta_id, " (SD=",round(sd(diff),2)," ; N=",n(),")")) %>%
-    ggplot( aes(x=diff)) +
-    geom_histogram(aes(y=(..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]), binwidth=.2) +
-    facet_wrap(~sta_id) +
-    scale_x_continuous(name = "Pressure Geolocator - best match ERA5 (hPa)") +
-    scale_y_continuous(name = "Normalized histogram")
+pam$pressure %>%
+  left_join(pressure_ts_bind %>% dplyr::select(c("date", "pressure0")), by = "date") %>%
+  mutate(diff = ifelse(is.na(pressure0), 0, obs - pressure0)) %>%
+  filter(sta_id > 0 & !isoutlier) %>%
+  group_by(sta_id) %>%
+  mutate(sta_id = paste0(sta_id, " (SD=", round(sd(diff), 2), " ; N=", n(), ")")) %>%
+  ggplot(aes(x = diff)) +
+  geom_histogram(aes(y = (..count..) / tapply(..count.., ..PANEL.., sum)[..PANEL..]), binwidth = .2) +
+  facet_wrap(~sta_id) +
+  scale_x_continuous(name = "Pressure Geolocator - best match ERA5 (hPa)") +
+  scale_y_continuous(name = "Normalized histogram")
 ```
 
 ## Light

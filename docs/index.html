@@ -2074,7 +2074,9 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </script>
 
   <!--/radix_placeholder_distill-->
-  <script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
+  <script src="site_libs/header-attrs-2.17/header-attrs.js"></script>
+  <script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+  <link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
   <script src="site_libs/popper-2.6.0/popper.min.js"></script>
   <link href="site_libs/tippy-6.2.7/tippy.css" rel="stylesheet" />
   <link href="site_libs/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
@@ -2110,10 +2112,10 @@ Wind Trajectory
 <span class="down-arrow">&#x25BE;</span>
 </button>
 <div class="nav-dropdown-content">
-<a href="/MK-RCRC/basic_trajectory/24TA.html">RCRC-24TA</a>
-<a href="/MK-RCRC/basic_trajectory/26YD.html">RCRC-24UL</a>
-<a href="/MK-RCRC/basic_trajectory/24UL.html">MK-24UL</a>
-<a href="/MK-RCRC/basic_trajectory/28AD.html">MK-24UL</a>
+<a href="/MK-RCRC/wind_trajectory/24TA.html">RCRC-24TA</a>
+<a href="/MK-RCRC/wind_trajectory/26YD.html">RCRC-24UL</a>
+<a href="/MK-RCRC/wind_trajectory/24UL.html">MK-24UL</a>
+<a href="/MK-RCRC/wind_trajectory/28AD.html">MK-24UL</a>
 </div>
 </div>
 <div class="nav-dropdown">
@@ -2154,7 +2156,153 @@ Technical Details
 
 
 <div class="d-article">
-<p>This is an example of the reports generated based on the <a href="https://github.com/Rafnuss/GeoPressureTemplate">GeoPressureTemplate</a>. You can navigate from this page to all the report generated.</p>
+<div class="d-contents d-contents-float">
+<nav class="l-text toc figcaption" id="TOC">
+<h3>Contents</h3>
+<ul>
+<li><a href="#introduction" id="toc-introduction">Introduction</a></li>
+<li><a href="#trajectories" id="toc-trajectories">Trajectories</a></li>
+<li><a href="#breeding-location---99-uncertainty-range" id="toc-breeding-location---99-uncertainty-range">Breeding location - 99% uncertainty range</a></li>
+<li><a href="#cumulative-flight-duration" id="toc-cumulative-flight-duration">Cumulative flight duration</a></li>
+</ul>
+</nav>
+</div>
+<h2 id="introduction">Introduction</h2>
+<div class="layout-chunk" data-layout="l-body">
+<details>
+<summary>
+Show code
+</summary>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>d</span> <span class='op'>&lt;-</span> <span class='fu'>read_excel</span><span class='op'>(</span><span class='st'>"../data/gpr_settings.xlsx"</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>keep</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>d</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>  <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='va'>gdl_id</span>, <span class='va'>common_name</span>, <span class='va'>ringNo</span>, <span class='va'>crop_start</span>, <span class='va'>crop_end</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>  <span class='fu'><a href='https://rdrr.io/pkg/knitr/man/kable.html'>kable</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>  <span class='fu'><a href='https://rdrr.io/pkg/kableExtra/man/column_spec.html'>column_spec</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>5</span><span class='op'>)</span>, background <span class='op'>=</span> <span class='va'>d</span><span class='op'>$</span><span class='va'>Color</span><span class='op'>)</span></span></code></pre>
+</div>
+</details>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+gdl_id
+</th>
+<th style="text-align:left;">
+common_name
+</th>
+<th style="text-align:left;">
+ringNo
+</th>
+<th style="text-align:left;">
+crop_start
+</th>
+<th style="text-align:left;">
+crop_end
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;background-color: #92ABA8 !important;">
+24UL
+</td>
+<td style="text-align:left;background-color: #92ABA8 !important;">
+Mangrove Kingfisher
+</td>
+<td style="text-align:left;background-color: #92ABA8 !important;">
+NA
+</td>
+<td style="text-align:left;background-color: #92ABA8 !important;">
+2020-07-08
+</td>
+<td style="text-align:left;background-color: #92ABA8 !important;">
+2021-07-16
+</td>
+</tr>
+<tr>
+<td style="text-align:left;background-color: #428F96 !important;">
+28AD
+</td>
+<td style="text-align:left;background-color: #428F96 !important;">
+Mangrove Kingfisher
+</td>
+<td style="text-align:left;background-color: #428F96 !important;">
+BB6541
+</td>
+<td style="text-align:left;background-color: #428F96 !important;">
+2021-08-18
+</td>
+<td style="text-align:left;background-color: #428F96 !important;">
+2022-06-30
+</td>
+</tr>
+<tr>
+<td style="text-align:left;background-color: #EBC344 !important;">
+24TA
+</td>
+<td style="text-align:left;background-color: #EBC344 !important;">
+Red-capped Robin-Chat
+</td>
+<td style="text-align:left;background-color: #EBC344 !important;">
+NA
+</td>
+<td style="text-align:left;background-color: #EBC344 !important;">
+2020-08-20
+</td>
+<td style="text-align:left;background-color: #EBC344 !important;">
+2021-06-10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;background-color: #C95D63 !important;">
+26YD
+</td>
+<td style="text-align:left;background-color: #C95D63 !important;">
+Red-capped Robin-chat
+</td>
+<td style="text-align:left;background-color: #C95D63 !important;">
+AA17314
+</td>
+<td style="text-align:left;background-color: #C95D63 !important;">
+2021-08-18
+</td>
+<td style="text-align:left;background-color: #C95D63 !important;">
+2022-06-21
+</td>
+</tr>
+<tr>
+<td style="text-align:left;background-color: #D58F35 !important;">
+28BP
+</td>
+<td style="text-align:left;background-color: #D58F35 !important;">
+Red-capped Robin-chat
+</td>
+<td style="text-align:left;background-color: #D58F35 !important;">
+AA17269
+</td>
+<td style="text-align:left;background-color: #D58F35 !important;">
+2021-08-10
+</td>
+<td style="text-align:left;background-color: #D58F35 !important;">
+2022-08-11
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="trajectories">Trajectories</h2>
+<p>In order: 24UL ; 28AD ; 24TA ; 26YD ; 28BP</p>
+<p><img src="figure_print/trajectory_24UL.png" style="width:30%;" /> <img src="figure_print/trajectory_28AD.png" style="width:30%;" /> <img src="figure_print/trajectory_24TA.png" style="width:30%;" /> <img src="figure_print/trajectory_26YD.png" style="width:30%;" /> <img src="figure_print/trajectory_28BP.png" style="width:30%;" /></p>
+<h2 id="breeding-location---99-uncertainty-range">Breeding location - 99% uncertainty range</h2>
+<p>MK are the two light blue colored while RCRC are warmer red-yellow colored.</p>
+<p>All our bird seems to be breeding near the border between Tanzania and Mozambique</p>
+<p><img src="figure_print/wintering_location.png" style="width:100%;" /></p>
+<h2 id="cumulative-flight-duration">Cumulative flight duration</h2>
+<p>Taking a step back and first looking at the total flight duration in both migratory season, we can see how all birds were flying much longer in pre-breeding season (Nov-Dec) than on their way back after breeding (Apr-Jun). The determination of these flight duration is relatively accurate, coming from accelerator data.</p>
+<p>Two options: the birds are taking a detour in pre-breeding season (but why?), or they are facing different wind regime that strongly affect their migratory duration/timing.</p>
+<p><img src="figure_print/cumulative_flight.png" style="width:100%;" /></p>
 <div class="layout-chunk" data-layout="l-body">
 <details>
 <summary>
@@ -2185,6 +2333,7 @@ Show code
 <li><a href=' technical_details/24UL.html '> 24UL </a></li>
 <li><a href=' technical_details/26YD.html '> 26YD </a></li>
 <li><a href=' technical_details/28AD.html '> 28AD </a></li>
+<li><a href=' technical_details/28BP.html '> 28BP </a></li>
 </ul>
 <h2 id="wind-trajectory">Wind Trajectory</h2>
 <ul>
@@ -2192,6 +2341,7 @@ Show code
 <li><a href=' wind_trajectory/24UL.html '> 24UL </a></li>
 <li><a href=' wind_trajectory/26YD.html '> 26YD </a></li>
 <li><a href=' wind_trajectory/28AD.html '> 28AD </a></li>
+<li><a href=' wind_trajectory/28BP.html '> 28BP </a></li>
 </ul>
 </div>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
