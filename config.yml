@@ -1,0 +1,344 @@
+default:
+  use: true
+  tag_set_map:
+    extent: [34, 42, -15, 0] # [W, E, S, N]
+    scale: 10 # 1 (min) -> 1° ; 2 -> 0.5° ; 5 -> 0.25° ; 10 (max) -> 0.1°
+    include_stap_id: NULL # default, take all
+    include_min_duration: 0 # in hours
+  geopressure_map:
+    max_sample: 500
+    margin: 30
+    sd: 0.7
+    thr_mask: 0.9
+    log_linear_pooling_weight: !expr \(n) log(n)/n
+  twilight_create:
+    twl_offset: NULL
+  geolight_map: # ?geolight_map()
+    twl_calib_adjust: 1.4
+    twl_llp: !expr \(n) log(n)/n
+  graph_create:
+    thr_likelihood: 0.99
+    thr_gs: 150
+  graph_add_wind:
+    thr_as: 90
+  graph_set_movement: # ?graph_set_movement()
+    type: "as"
+    # method: "gamma"
+    # shape: 7 # only for gamma
+    # scale: 7
+    # location: 40 # only for logistic
+    # low_speed_fix: 15 # km/h
+  graph_simulation: # ?graph_simulation()
+    nj: 10
+  pressurepath_create: # ?pressurepath_create()
+    variable: ["altitude", "surface_pressure"]
+    # solar_dep: 0
+  geopressuretemplate: # ?geopressuretemplate()
+    likelihood: ["map_pressure", "map_light"] #  for nothing
+    outputs: ["marginal", "most_likely", "simulation"]
+    pressurepath: ["most_likely"] # "geopressureviz"
+
+# ------- NOT USED
+24VC:
+  use: false
+  description: "data stopped 2020-07-18 (less than a month of data)"
+  tag_create:
+    crop_start: "2020-06-30"
+    crop_end: "2021-07-22"
+  tag_set_map:
+    known:
+      stap_id: [1, -1]
+      known_lon: 39.952868
+      known_lat: -3.340795
+  bird_create:
+    scientific_name: "Halcyon senegaloides"
+
+28AA:
+  use: FALSE
+  description: "data stopped 2021-09-10. Just over 1 month of activity and pressure data but no movement/migration."
+  tag_create:
+    crop_start: "2021-07-27"
+    crop_end: "2022-07-14"
+  tag_set_map:
+    known:
+      stap_id: [1, -1]
+      known_lon: [39.947545, 39.950184]
+      kknown_lat: [-3.340739, -3.339192]
+  bird_create:
+    scientific_name: "Halcyon senegaloides"
+
+28AZ:
+  use: FALSE
+  description: "data stoped 2021-10-03. Just over 1 month of activity and pressure data but no movement/migration."
+  tag_create:
+    crop_start: "2021-07-18"
+    crop_end: "2022-08-05"
+  tag_set_map:
+    known:
+      stap_id: [1, -1]
+      known_lon: 39.94781
+      known_lat: -3.35018
+  bird_create:
+    scientific_name: "Halcyon senegaloides"
+
+# ------- LIGHT ONLY
+
+27MN:
+  tag_create:
+    crop_start: "2020-09-04"
+    crop_end: "2021-07-29"
+    assert_pressure: false
+  tag_set_map:
+    known:
+      stap_id: [1, -1]
+      known_lon: 39.988903
+      known_lat: -3.37827
+  geopressuretemplate:
+    likelihood: ["map_light"]
+  bird_create:
+    scientific_name: "Cossypha natalensis"
+
+27LH:
+  tag_create:
+    crop_start: "2020-06-11"
+    crop_end: "2021-11-04"
+    assert_pressure: false
+  tag_set_map:
+    known:
+      stap_id: [1, -1]
+      known_lon: 39.988903
+      known_lat: -3.37827
+  geopressuretemplate:
+    likelihood: ["map_light"]
+  bird_create:
+    scientific_name: "Cossypha natalensis"
+
+25LQ:
+  tag_create:
+    crop_start: "2020-06-04"
+  tag_set_map:
+    assert_pressure: false
+    known:
+      stap_id: [1, -1]
+      known_lon: 39.988903
+      known_lat: -3.37827
+  geopressuretemplate:
+    likelihood: ["map_light"]
+  bird_create:
+    scientific_name: "Cossypha natalensis"
+
+# ------- PARTIAL ISSUE
+
+24SZ:
+  use: false
+  description: "pressure measurement incorrect. Why? But activity ok, so we can get migration flight timing"
+  tag_create:
+    crop_start: "2020-06-01"
+    crop_end: "2021-09-30"
+    pressure_file: "no_file"
+    assert_pressure: FALSE
+  tag_set_map:
+    known:
+      stap_id: [1, -1]
+      known_lon: 39.988903
+      known_lat: -3.37827
+  geopressuretemplate:
+    likelihood: ["map_light"]
+  bird_create:
+    scientific_name: "Cossypha natalensis"
+
+# ------- WORKING
+
+24UL:
+  tag_create:
+    crop_start: "2020-07-08"
+    crop_end: "2021-07-16"
+  tag_set_map:
+    known:
+      stap_id: [1, -1]
+      known_lon: 39.971647
+      known_lat: -3.37827
+  bird_create:
+    scientific_name: "Halcyon senegaloides"
+
+28AD:
+  tag_create:
+    crop_start: "2021-08-18"
+    crop_end: "2022-06-30"
+  tag_set_map:
+    known:
+      stap_id: [1, -1]
+      known_lon: 39.988903
+      known_lat: -3.37827
+  bird_create:
+    scientific_name: "Halcyon senegaloides"
+
+30JS:
+  tag_create:
+    crop_start: "2022-09-22"
+    crop_end: "2023-06-13"
+  tag_set_map:
+    known:
+      stap_id: [1, -1]
+      known_lon: 39.988903
+      known_lat: -3.37827
+  bird_create:
+    scientific_name: "Halcyon senegaloides"
+
+30HZ:
+  tag_create:
+    crop_start: "2022-07-15"
+    crop_end: "2023-05-16"
+  tag_set_map:
+    known:
+      stap_id: 1
+      known_lon: 39.950184
+      known_lat: -3.339192
+  bird_create:
+    scientific_name: "Halcyon senegaloides"
+
+24TA:
+  tag_create:
+    crop_start: "2020-08-20"
+    crop_end: "2021-06-10"
+  tag_set_map:
+    known:
+      stap_id: [1, -1]
+      known_lon: 39.988903
+      known_lat: -3.37827
+  bird_create:
+    scientific_name: "Cossypha natalensis"
+
+26YD:
+  tag_create:
+    crop_start: "2021-08-18"
+    crop_end: "2022-06-21"
+  tag_set_map:
+    known:
+      stap_id: [1, -1]
+      known_lon: 39.988903
+      known_lat: -3.37827
+  bird_create:
+    scientific_name: "Cossypha natalensis"
+
+28BP:
+  tag_create:
+    crop_start: "2021-08-10"
+    crop_end: "2022-08-11"
+  tag_set_map:
+    known:
+      stap_id: [1, -1]
+      known_lon: 39.988903
+      known_lat: -3.37827
+  bird_create:
+    scientific_name: "Cossypha natalensis"
+
+30HQ:
+  tag_create:
+    crop_start: "2022-08-19"
+    crop_end: "2023-07-06"
+  tag_set_map:
+    known:
+      stap_id: [1, -1]
+      known_lon: 39.988903
+      known_lat: -3.37827
+  bird_create:
+    scientific_name: "Cossypha natalensis"
+
+30IJ:
+  tag_create:
+    crop_start: "2022-11-18"
+    crop_end: "2023-06-13"
+  tag_set_map:
+    known:
+      stap_id: [1, -1]
+      known_lon: 39.988903
+      known_lat: -3.37827
+  bird_create:
+    scientific_name: "Cossypha natalensis"
+
+30WM:
+  tag_create:
+    crop_start: "2023-07-07"
+    crop_end: "2024-07-26"
+  tag_set_map:
+    known:
+      stap_id: [1, -1]
+      known_lon: 39.988903
+      known_lat: -3.37827
+  bird_create:
+    scientific_name: "Cossypha natalensis"
+
+30II:
+  tag_create:
+    crop_start: "2022-10-29"
+    crop_end: "2023-12-31"
+  tag_set_map:
+    known:
+      stap_id: [1, 10]
+      known_lon: 39.988903
+      known_lat: -3.37827
+  bird_create:
+    scientific_name: "Cossypha natalensis"
+
+28CE:
+  tag_create:
+    crop_start: "2021-10-01"
+    crop_end: "2022-11-01"
+  tag_set_map:
+    known:
+      stap_id: [1, -1]
+      known_lon: 39.988903
+      known_lat: -3.37827
+  bird_create:
+    scientific_name: "Cossypha natalensis"
+
+28CC:
+  tag_create:
+    crop_start: "2021-06-11"
+    crop_end: "2022-10-28"
+  tag_set_map:
+    known:
+      stap_id: [1, -1]
+      known_lon: 39.988903
+      known_lat: -3.37827
+  bird_create:
+    scientific_name: "Cossypha natalensis"
+
+28CH:
+  description: "3 migrations"
+  tag_create:
+    crop_start: "2021-06-04"
+    crop_end: # "2023-10-12"
+  tag_set_map:
+    known:
+      stap_id: [1, 13]
+      known_lon: 39.988903
+      known_lat: -3.37827
+  bird_create:
+    scientific_name: "Cossypha natalensis"
+
+28CG:
+  description: "data stopped 2021-12-01. One migration."
+  tag_create:
+    crop_start: "2021-07-09"
+    crop_end:
+  tag_set_map:
+    known:
+      stap_id: 1
+      known_lon: 39.988903
+      known_lat: -3.37827
+  bird_create:
+    scientific_name: "Cossypha natalensis"
+
+30GP:
+  tag_create:
+    crop_start: "2022-07-15"
+    crop_end: # "2023-12-31"
+  tag_set_map:
+    known:
+      stap_id: [1, -1]
+      known_lon: 39.988903
+      known_lat: -3.37827
+  bird_create:
+    scientific_name: "Cossypha natalensis"

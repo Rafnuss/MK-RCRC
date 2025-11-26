@@ -43,3 +43,8 @@ vignettes/*.pdf
 .RDataTmp
 
 *.RData
+/ARK-sharepoint-copy
+/old
+/data/wind
+/output
+/data/datapackage
