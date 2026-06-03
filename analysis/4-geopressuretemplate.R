@@ -6,7 +6,7 @@ library(tidyverse)
 
 
 ## Run workflow for all tags
-list_id <- config2tibble() |>
+list_id <- config2tibble(filter_return = FALSE) |>
   filter(
     use &
       geopressuretemplate.likelihood != "map_light"
@@ -33,7 +33,15 @@ for (id in list_id) {
 }
 
 # Run pressurepath
-for (id in list_id) {
+for (id in c("28CG", "28CH", "30GP", "330II")) {
   cli::cli_h1("Run pressurepath for {id}")
-  geopressuretemplate_pressurepath(id)
+  tryCatch(
+    geopressuretemplate_pressurepath(id),
+    error = function(e) {
+      cli::cli_alert_danger(
+        "pressurepath failed for {id}: {conditionMessage(e)}"
+      )
+      NULL
+    }
+  )
 }

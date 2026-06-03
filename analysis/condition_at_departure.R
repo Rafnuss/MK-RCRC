@@ -31,20 +31,12 @@ p <- paths(pkg) %>%
     )
   )
 
+
+# Check thr_long
 ggplot(p) +
   geom_histogram(aes(x = duration, color = stage)) +
   facet_wrap(~tag_id) +
   geom_vline(xintercept = thr_long, colour = "red")
-
-
-p %>%
-  filter(stage == "wintering") %>%
-  mutate(
-    doy_end = yday(end),
-    year_end = year(end)
-  ) %>%
-  ggplot(aes(x = doy_end, y = year_end)) +
-  geom_point()
 
 
 daily_mwamba <- read_csv(
@@ -107,9 +99,9 @@ hourly_mtwari <- read_csv(
 ## Annual and monthly average
 daily_mtwari %>%
   pivot_longer(c(temperature, precipitation, wind_speed, wind_direction)) %>%
-  mutate(doy = yday(date)) %>%
+  mutate(doy = yday(date), year = year(date)) %>%
   ggplot(aes(x = doy, y = value)) +
-  geom_point() +
+  geom_line(aes(group = year), color = "grey") +
   geom_smooth() +
   facet_wrap(~name, ncol = 1, , scales = "free_y")
 
@@ -160,21 +152,14 @@ ggplotly(
 ggplotly(
   ggplot() +
     geom_step(
-      data = daily_mtwari %>% filter(year(date) < 2024 & year(date) > 2020),
-      aes(x = yday(date), y = wind_speed, colour = as.factor(year(date)))
+      data = daily_mwamba %>% filter(year(date) < 2026 & year(date) >= 2020),
+      aes(x = yday(date), y = wind_direction, colour = as.factor(year(date)))
     ) +
     geom_vline(
-      data = pp %>% filter(status == "wintering"),
+      data = p |>
+        group_by(tag_id) %>%
+        filter(stap_id != max(stap_id)) %>%
+        filter(stage == "wintering"),
       aes(xintercept = as.numeric(yday(end)), colour = as.factor(year(end)))
-    ) +
-    geom_line(
-      data = daily_mtwari %>%
-        mutate(date = yday(date)) %>%
-        group_by(date) %>%
-        summarise(across(
-          c(temperature, precipitation, wind_speed, wind_direction),
-          median
-        )),
-      aes(x = date, y = wind_speed)
     )
 )
