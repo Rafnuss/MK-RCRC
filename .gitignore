@@ -48,3 +48,5 @@ vignettes/*.pdf
 /data/wind
 /output
 /data/datapackage
+/data/meta
+/data/ERA5
