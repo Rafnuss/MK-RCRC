@@ -14,14 +14,14 @@ list_id <- config2tibble(filter_return = FALSE) |>
   pull(id)
 
 # Manual checking of coherence
-id = "16LF"
+id <- "32VX"
 geopressureviz(id)
 
 # Add wind
 for (id in list_id) {
   cli::cli_h1("Run tag_download_wind for {id}")
   load(glue::glue("./data/interim/{id}.RData"))
-  job::job({
+  a <- mirai::mirai({
     tag_download_wind(tag)
   })
 }

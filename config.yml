@@ -7,7 +7,7 @@ default:
     include_min_duration: 0 # in hours
   geopressure_map:
     max_sample: 500
-    margin: 30
+    margin: 50
     sd: 0.7
     thr_mask: 0.9
     log_linear_pooling_weight: !expr \(n) log(n)/n
@@ -41,7 +41,7 @@ default:
 # ------- NOT USED
 24VC:
   use: false
-  description: "data stopped 2020-07-18 (less than a month of data)"
+  tag_comment: "data stopped 2020-07-18 (less than a month of data)"
   tag_create:
     crop_start: "2020-06-30"
     crop_end: "2021-07-22"
@@ -55,7 +55,7 @@ default:
 
 28AA:
   use: FALSE
-  description: "data stopped 2021-09-10. Just over 1 month of activity and pressure data but no movement/migration."
+  tag_comment: "data stopped 2021-09-10. Just over 1 month of activity and pressure data but no movement/migration."
   tag_create:
     crop_start: "2021-07-27"
     crop_end: "2022-07-14"
@@ -69,7 +69,7 @@ default:
 
 28AZ:
   use: FALSE
-  description: "data stoped 2021-10-03. Just over 1 month of activity and pressure data but no movement/migration."
+  tag_comment: "data stoped 2021-10-03. Just over 1 month of activity and pressure data but no movement/migration."
   tag_create:
     crop_start: "2021-07-18"
     crop_end: "2022-08-05"
@@ -131,7 +131,7 @@ default:
 
 24SZ:
   use: false
-  description: "pressure measurement incorrect. Why? But activity ok, so we can get migration flight timing"
+  tag_comment: "pressure measurement incorrect. Why? But activity ok, so we can get migration flight timing"
   tag_create:
     crop_start: "2020-06-01"
     crop_end: "2021-09-30"
@@ -306,7 +306,7 @@ default:
     scientific_name: "Cossypha natalensis"
 
 28CH:
-  description: "3 migrations"
+  tag_comment: "3 migrations"
   tag_create:
     crop_start: "2021-06-04"
     crop_end: # "2023-10-12"
@@ -319,7 +319,7 @@ default:
     scientific_name: "Cossypha natalensis"
 
 28CG:
-  description: "data stopped 2021-12-01. One migration."
+  tag_comment: "data stopped 2021-12-01. One migration."
   tag_create:
     crop_start: "2021-07-09"
     crop_end:
@@ -335,6 +335,32 @@ default:
   tag_create:
     crop_start: "2022-07-15"
     crop_end: # "2023-12-31"
+  tag_set_map:
+    known:
+      stap_id: [1, -1]
+      known_lon: 39.988903
+      known_lat: -3.37827
+  bird_create:
+    scientific_name: "Cossypha natalensis"
+
+32WS:
+  tag_create:
+    crop_start: "2024-09-23"
+    crop_end: "2025-11-06"
+  tag_set_map:
+    known:
+      stap_id: [1, -1]
+      known_lon: 39.988903
+      known_lat: -3.37827
+  bird_create:
+    scientific_name: "Cossypha natalensis"
+
+# problematic tag, with data interruptions including during flights and drifts:
+32VX:
+  tag_comment: "problematic tag, with data interruptions including during flights. Drifts were corrected by Martins Briedis and one flight was manual created in between two high-activity period (14.05.2025)."
+  tag_create:
+    crop_start: "2024-07-11"
+    crop_end: "2025-05-25"
   tag_set_map:
     known:
       stap_id: [1, -1]

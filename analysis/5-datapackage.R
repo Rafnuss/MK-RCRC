@@ -1,23 +1,41 @@
-library(frictionless)
+# https://raphaelnussbaumer.com/GeoPressureManual/geolocator-create.html
+
 library(GeoLocatoR)
-library(zen4R)
 
-## Publish Data Pacakge
-# See https://raphaelnussbaumer.com/GeoLocatoR/articles/create-from-geopressuretemplate.html
+# Step 1. Create package from GeoPressureTemplate
+pkg <- read_geopressuretemplate()
 
-# Create the datapackage
-zenodo <- ZenodoManager$new(token = keyring::key_get(service = "ZENODO_PAT"))
+# Check for basic information
+print(pkg)
 
-z <- zenodo$getDepositionByConceptDOI("10.5281/zenodo.16804931")
-pkg <- zenodo_to_gldp(z)
 
-# Add data
-pkg <- add_gldp_geopressuretemplate(pkg)
+# Step 2. Export tags/observations and complete metadata manually in CSV
+# write.csv(tags(pkg), file = "data/tags.csv", row.names = FALSE)
+# write.csv(observations(pkg), file = "data/observations.csv", row.names = FALSE)
+# pkg <- read_geopressuretemplate()
 
-# print(pkg)
+# observations(pkg) <- read_csv("data/observations.csv")
+# tags(pkg) <- read_csv("data/tags.csv")
 
-# Check package
+# Validate
 validate_gldp(pkg)
 
-dir.create("data/datapackage", showWarnings = FALSE)
-write_package(pkg, "data/datapackage/")
+# Step 3. Visual checks
+plot(pkg, "ring")
+plot(pkg, "coverage")
+plot(pkg, "map")
+
+# Step 4. Write files locally to upload on Zenodo
+write_gldp(pkg, "data/datapackage")
+
+# Step 5. Create record on Zenodo
+# https://zenodo.org/uploads/new
+
+# Step 6. Validate Zenodo draft content before submitting
+# keyring::key_set_with_value("ZENODO_TOKEN", password = "{your_zenodo_token}")
+pkg <- read_zenodo(
+  "{your_reserved_doi}",
+  draft = TRUE, # draft record
+)
+
+validate_gldp(pkg)
